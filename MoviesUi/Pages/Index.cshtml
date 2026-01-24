@@ -1,0 +1,48 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Movies";
+}
+
+<div class="container mt-4">
+    <h1 class="display-6 mb-3">Movies</h1>
+
+    @if (!string.IsNullOrWhiteSpace(Model.FriendlyMessage))
+    {
+        <div class="alert alert-warning" role="alert">
+            @Model.FriendlyMessage
+        </div>
+    }
+    else if (Model.Movies.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No movies were returned from the service.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Studio</th>
+                        <th scope="col">Director</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var movie in Model.Movies)
+                {
+                    <tr>
+                        <td>@movie.Id</td>
+                        <td>@movie.Name</td>
+                        <td>@movie.Studio</td>
+                        <td>@movie.Director</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

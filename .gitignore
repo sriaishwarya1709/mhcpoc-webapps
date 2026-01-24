@@ -1,0 +1,41 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## IDE
+.vscode/
+.idea/
+*.rsuser
+*.sln.iml
+
+## Logs
+*.log
+
+## ASP.NET
+appsettings.*.json
+!appsettings.json
+
+## OS
+.DS_Store
+Thumbs.db
+
+## .NET
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Rider
+*.sln.DotSettings.user
+
+## Misc
+*.swp
+*.tmp

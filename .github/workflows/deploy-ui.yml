@@ -1,0 +1,42 @@
+name: Deploy Movies UI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "MoviesUi/**"
+      - "MoviesDemo.sln"
+      - ".github/workflows/deploy-ui.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore ./MoviesUi/MoviesUi.csproj
+
+      - name: Build
+        run: dotnet build ./MoviesUi/MoviesUi.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish ./MoviesUi/MoviesUi.csproj --configuration Release --no-build --output ./publish
+
+      - name: Deploy to App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: appmhcwebuieus2
+          package: ./publish
+          publish-profile: ${{ secrets.UI_PUBLISHING_PROFILE }}
