@@ -75,3 +75,20 @@ Use this when the API is hosted on-premises and the UI runs in App Service integ
 7. Validate resolution and connectivity:
    - From the App Service (Kudu/Console), `nslookup onpremapi.mycontoso.com` should return the on-prem IP.
    - Access `http://onpremapi.mycontoso.com/MoviesApi/api/movies` (or `/api/movies` if hosted at IIS Server root).
+
+## Store MoviesApi base URL in Key Vault (private endpoint)
+Use this when the Key Vault is private and accessed from the App Service VNet integration subnet.
+
+### Steps
+1. Create the secret in Key Vault (example name: `MoviesApi-BaseUrl`) with the value set to the API base URL (for example, `http://onpremapi.mycontoso.com`).
+2. Enable **Private endpoint** for the Key Vault in the Private Endpoint subnet of the spoke VNet.
+3. Create or link the **private DNS zone** `privatelink.vaultcore.azure.net` to the spoke VNet where the App Service is integrated.
+4. Ensure App Service VNet integration can resolve the Key Vault private endpoint and reach it over the network.
+
+### Permissions
+Assign the App Service **managed identity** the **Key Vault Secrets User** role (or **Key Vault Secrets Officer** if it must create/update secrets). This grants `get` access to secrets.
+
+### App Service setting
+In the UI App Service, set `MoviesApi__BaseUrl` to the Key Vault reference:
+- `@Microsoft.KeyVault(SecretUri=https://<vault-name>.vault.azure.net/secrets/MoviesApi-BaseUrl)`
+- Or specify a version: `@Microsoft.KeyVault(SecretUri=https://<vault-name>.vault.azure.net/secrets/MoviesApi-BaseUrl/<version>)`
