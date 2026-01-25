@@ -10,7 +10,7 @@
     @if (!string.IsNullOrWhiteSpace(Model.FriendlyMessage))
     {
         <div class="alert alert-warning" role="alert">
-            @Model.FriendlyMessage
+            <span class="preserve-lines">@Model.FriendlyMessage</span>
         </div>
     }
     else if (Model.Movies.Count == 0)
