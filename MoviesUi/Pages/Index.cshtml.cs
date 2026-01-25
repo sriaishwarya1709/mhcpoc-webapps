@@ -34,7 +34,7 @@ public class IndexModel : PageModel
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to fetch movies from the API.");
-            FriendlyMessage = "Unable to reach movies service right now. Please try again later.";
+            FriendlyMessage = $"Unable to reach movies service right now. Please try again later. Details: {ex.Message}";
         }
     }
 
