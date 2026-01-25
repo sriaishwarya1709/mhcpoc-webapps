@@ -38,19 +38,19 @@ From the repo root, publish to a folder:
 1. `dotnet publish .\MoviesApi\MoviesApi.csproj -c Release -o .\publish\MoviesApi`
 
 ### Configure IIS
-1. Copy the published output folder (for example, `publish\MoviesApi`) to the server.
+1. Copy the published output folder (for example, `publish\MoviesApi`) to the server (eg, `c:\inetpub\wwwroot\MoviesApi`).
 2. Open **IIS Manager**.
 3. Create or select an Application Pool:
    - **.NET CLR version**: *No Managed Code*
    - **Pipeline mode**: *Integrated*
-4. Create a new website (or application) and point **Physical path** to the published folder, name the application MoviesApi.
+4. Create a new website (or application eg MoviesApi) and point **Physical path** to the published folder, name the application MoviesApi.
 5. Assign the site to the Application Pool you configured.
 6. (Optional) Add environment variables in IIS if needed:
    - `ASPNETCORE_ENVIRONMENT` (for example, `Production`)
-7. (Optional) To host at the site root, set the **Default Web Site** Physical Path to the published folder and remove any MoviesApi application.
+7. (Optional) To host at the site root, set the **Default Web Site** Physical Path to the published folder
 8. Start the site and browse to `http://<server>/MoviesApi/api/movies` to validate the response (or `http://<server>/api/movies` if hosted at root).
 
 ### Notes
 - HTTPS redirection is currently commented out in the API. You can run HTTP-only on IIS, but HTTPS is recommended for production.
 - To enable HTTPS, add an HTTPS binding with a valid certificate in IIS and uncomment `app.UseHttpsRedirection()` in `MoviesApi/Program.cs`.
-- If you need a different base URL for the UI, update `MoviesApi:BaseUrl` in the UI config (see Configuration section above).
+- If you need a different base URL for the UI, update `MoviesApi:BaseUrl` in the UI config (see Configuration section above). The base URL ends at domain name, additional path will be stripped! so only `http://server_dns_name>`

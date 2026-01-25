@@ -30,7 +30,7 @@ public class IndexModel : PageModel
 
         try
         {
-            using var response = await client.GetAsync("MoviesApi/api/movies");
+            using var response = await client.GetAsync("api/movies");
             var rawContent = await response.Content.ReadAsStringAsync();
             var requestInfo = response.RequestMessage is null
                 ? "Request: <unknown>"
