@@ -54,3 +54,24 @@ From the repo root, publish to a folder:
 - HTTPS redirection is currently commented out in the API. You can run HTTP-only on IIS, but HTTPS is recommended for production.
 - To enable HTTPS, add an HTTPS binding with a valid certificate in IIS and uncomment `app.UseHttpsRedirection()` in `MoviesApi/Program.cs`.
 - If you need a different base URL for the UI, update `MoviesApi:BaseUrl` in the UI config (see Configuration section above). The base URL ends at domain name, additional path will be stripped! so only `http://server_dns_name>`
+
+## Configure Private Resolver for App Service to reach on-prem IIS
+Use this when the API is hosted on-premises and the UI runs in App Service integrated to a spoke VNet, with Azure DNS Private Resolver in the hub VNet.
+
+### Prerequisites
+1. Hub-and-spoke VNets are peered (hub ↔ spoke) with **Allow forwarded traffic** enabled.
+2. Connectivity from Azure to on-prem exists (VPN or ExpressRoute).
+3. The IIS server has a stable DNS name (for example, `onpremapi.mycontoso.com`) and reachable IP from Azure.
+
+### Steps
+1. In the hub VNet, deploy **Azure DNS Private Resolver** with:
+   - An **Inbound Endpoint** in a hub subnet.
+   - An **Outbound Endpoint** in another hub subnet.
+2. Create a **DNS Forwarding Ruleset** and add a rule that forwards your on-prem DNS zone (for example, `mycontoso.com`) to your on-prem DNS servers using the Outbound Endpoint of the Private Resolver
+3. Link the ruleset to the **spoke VNet** where the App Service VNet integration subnet lives.
+4. Configure conditional forwarder on your **on-prem DNS** servers to forward queries for Azure private zones (if any) to the Private Resolver **Inbound Endpoint** IPs.
+5. Ensure NSGs and firewalls allow DNS (UDP/TCP 53) between spoke ↔ hub and hub ↔ on-prem.
+6. Update the Web UI app setting `MoviesApi__BaseUrl` to the on-prem hostname (for example, `http://onpremapi.mycontoso.com`).
+7. Validate resolution and connectivity:
+   - From the App Service (Kudu/Console), `nslookup onpremapi.mycontoso.com` should return the on-prem IP.
+   - Access `http://onpremapi.mycontoso.com/MoviesApi/api/movies` (or `/api/movies` if hosted at IIS Server root).
