@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace MoviesUi.Pages;
 
@@ -28,13 +29,29 @@ public class IndexModel : PageModel
 
         try
         {
-            var movies = await client.GetFromJsonAsync<List<Movie>>("api/movies");
+            using var response = await client.GetAsync("api/movies");
+            var rawContent = await response.Content.ReadAsStringAsync();
+            var requestInfo = response.RequestMessage is null
+                ? "Request: <unknown>"
+                : $"Request: {response.RequestMessage.Method} {response.RequestMessage.RequestUri}";
+
+            if (!response.IsSuccessStatusCode)
+            {
+                FriendlyMessage = $"Movies service returned {(int)response.StatusCode} ({response.ReasonPhrase}).{Environment.NewLine}{requestInfo}{Environment.NewLine}Service URL: {client.BaseAddress}{Environment.NewLine}Response: {rawContent}";
+                return;
+            }
+
+            var movies = JsonSerializer.Deserialize<List<Movie>>(rawContent, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
             Movies = movies ?? new List<Movie>();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to fetch movies from the API.");
-            FriendlyMessage = $"Unable to reach movies service right now. Please try again later.{Environment.NewLine}Service URL: {client.BaseAddress}{Environment.NewLine}Details: {ex.Message}";
+            FriendlyMessage = $"Unable to reach movies service right now. Please try again later.{Environment.NewLine}Request: GET {client.BaseAddress}api/movies{Environment.NewLine}Service URL: {client.BaseAddress}{Environment.NewLine}Details: {ex.Message}";
         }
     }
 
