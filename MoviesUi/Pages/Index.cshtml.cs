@@ -17,6 +17,7 @@ public class IndexModel : PageModel
 
     public IReadOnlyList<Movie> Movies { get; private set; } = Array.Empty<Movie>();
     public string? FriendlyMessage { get; private set; }
+    public string? RequestUrl { get; private set; }
 
     public async Task OnGetAsync()
     {
@@ -29,11 +30,12 @@ public class IndexModel : PageModel
 
         try
         {
-            using var response = await client.GetAsync("api/movies");
+            using var response = await client.GetAsync("MoviesApi/api/movies");
             var rawContent = await response.Content.ReadAsStringAsync();
             var requestInfo = response.RequestMessage is null
                 ? "Request: <unknown>"
                 : $"Request: {response.RequestMessage.Method} {response.RequestMessage.RequestUri}";
+            RequestUrl = response.RequestMessage?.RequestUri?.ToString();
 
             if (!response.IsSuccessStatusCode)
             {

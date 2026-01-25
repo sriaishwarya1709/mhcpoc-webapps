@@ -44,5 +44,11 @@
                 </tbody>
             </table>
         </div>
+        @if (!string.IsNullOrWhiteSpace(Model.RequestUrl))
+        {
+            <div class="text-muted small mt-2">
+                API Request URL: @Model.RequestUrl
+            </div>
+        }
     }
 </div>

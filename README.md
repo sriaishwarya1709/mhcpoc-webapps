@@ -47,7 +47,8 @@ From the repo root, publish to a folder:
 5. Assign the site to the Application Pool you configured.
 6. (Optional) Add environment variables in IIS if needed:
    - `ASPNETCORE_ENVIRONMENT` (for example, `Production`)
-7. Start the site and browse to `http://<server>/MoviesApi/api/movies` to validate the response.
+7. (Optional) To host at the site root, set the **Default Web Site** Physical Path to the published folder and remove any MoviesApi application.
+8. Start the site and browse to `http://<server>/MoviesApi/api/movies` to validate the response (or `http://<server>/api/movies` if hosted at root).
 
 ### Notes
 - HTTPS redirection is currently commented out in the API. You can run HTTP-only on IIS, but HTTPS is recommended for production.
