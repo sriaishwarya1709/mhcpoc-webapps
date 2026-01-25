@@ -6,10 +6,12 @@ namespace MoviesUi.Pages;
 public class IndexModel : PageModel
 {
     private readonly IHttpClientFactory _httpClientFactory;
+    private readonly ILogger<IndexModel> _logger;
 
-    public IndexModel(IHttpClientFactory httpClientFactory)
+    public IndexModel(IHttpClientFactory httpClientFactory, ILogger<IndexModel> logger)
     {
         _httpClientFactory = httpClientFactory;
+        _logger = logger;
     }
 
     public IReadOnlyList<Movie> Movies { get; private set; } = Array.Empty<Movie>();
@@ -29,8 +31,9 @@ public class IndexModel : PageModel
             var movies = await client.GetFromJsonAsync<List<Movie>>("api/movies");
             Movies = movies ?? new List<Movie>();
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Failed to fetch movies from the API.");
             FriendlyMessage = "Unable to reach movies service right now. Please try again later.";
         }
     }
