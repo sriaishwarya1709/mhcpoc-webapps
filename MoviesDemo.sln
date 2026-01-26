@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesApi", "MoviesApi\Movi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesUi", "MoviesUi\MoviesUi.csproj", "{2D1F9A8E-3AB6-4F41-BFC1-109D354B76DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MoviesMcpServer", "MoviesMcpServer\MoviesMcpServer.csproj", "{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{2D1F9A8E-3AB6-4F41-BFC1-109D354B76DA}.Release|x64.Build.0 = Release|Any CPU
 		{2D1F9A8E-3AB6-4F41-BFC1-109D354B76DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{2D1F9A8E-3AB6-4F41-BFC1-109D354B76DA}.Release|x86.Build.0 = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Debug|x86.Build.0 = Debug|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|x64.Build.0 = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|x86.ActiveCfg = Release|Any CPU
+		{B901F0B1-7DE3-4D4C-A7D1-0E0CE8A1B0D0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
