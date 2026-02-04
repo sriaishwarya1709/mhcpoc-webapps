@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/.git/
+**/.gitignore
+**/*.user
+**/*.suo
+**/*.cache
+**/*.log
+**/node_modules/
+**/packages/
+**/TestResults/
+**/publish/

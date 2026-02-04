@@ -22,6 +22,46 @@ To configure in Azure App Service:
 3. Start the UI:
    - `dotnet run --project .\MoviesUi\MoviesUi.csproj`
 
+## Containerize MoviesUi for Azure Container Apps
+This uses the Dockerfile at [MoviesUi/Dockerfile](MoviesUi/Dockerfile) and exposes port **8080** (Azure Container Apps default).
+
+### Build and run locally (optional)
+1. From repo root, build the container image:
+   - `docker build -t moviesui:local -f .\MoviesUi\Dockerfile .`
+2. Run the container:
+   - `docker run -p 8080:8080 -e MoviesApi__BaseUrl=https://<your-api-host> moviesui:local`
+3. Browse to `http://localhost:8080`.
+
+### Deploy to Azure Container Apps
+Prerequisites:
+- Azure CLI (`az`) with the Container Apps extension.
+- An Azure Container Registry (ACR) to host the image.
+
+1. Set variables (PowerShell example):
+   - `$resourceGroup = "rg-movies"`
+   - `$location = "eastus"`
+   - `$acrName = "acrmoviesdemo"`
+   - `$imageName = "moviesui"`
+   - `$tag = "v1"`
+   - `$envName = "movies-env"`
+   - `$appName = "movies-ui"`
+2. Create or use an ACR and login:
+   - `az acr create -g $resourceGroup -n $acrName --sku Basic`
+   - `az acr login -n $acrName`
+3. Build and push the image:
+   - `docker build -t ${acrName}.azurecr.io/${imageName}:${tag} -f .\MoviesUi\Dockerfile .`
+   - `docker push ${acrName}.azurecr.io/${imageName}:${tag}`
+4. Create a Container Apps environment:
+   - `az containerapp env create -g $resourceGroup -n $envName -l $location`
+5. Create the Container App (public ingress on port 8080):
+   - `az containerapp create -g $resourceGroup -n $appName --environment $envName --image ${acrName}.azurecr.io/${imageName}:${tag} --ingress external --target-port 8080 --registry-server ${acrName}.azurecr.io --env-vars MoviesApi__BaseUrl=https://<your-api-host>`
+6. Get the app URL:
+   - `az containerapp show -g $resourceGroup -n $appName --query properties.configuration.ingress.fqdn -o tsv`
+
+Notes:
+- If the Movies API is also hosted in Azure, set `MoviesApi__BaseUrl` to its public or internal endpoint as appropriate.
+- For private API access, use a VNet-integrated Container Apps environment and ensure DNS resolution to the API works.
+
 ## Endpoints
 - `GET /api/movies`
 - `GET /api/movies/{id}`
