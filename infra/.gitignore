@@ -1,0 +1,9 @@
+# Bicep build outputs
+*.json
+
+# Local deployment outputs
+deployment-outputs.txt
+*.log
+
+# Keep parameter files
+!main.bicepparam

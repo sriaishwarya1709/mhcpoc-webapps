@@ -1,0 +1,131 @@
+name: Deploy Azure Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy'
+        required: true
+        default: 'eus2'
+        type: choice
+        options:
+          - eus2
+          - prod
+          - dev
+  push:
+    branches:
+      - main
+    paths:
+      - 'infra/**'
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  RESOURCE_GROUP: rg-mhcpoc-eus2
+  LOCATION: eastus2
+
+jobs:
+  deploy-infrastructure:
+    runs-on: ubuntu-latest
+    outputs:
+      acrName: ${{ steps.deploy.outputs.acrName }}
+      acrLoginServer: ${{ steps.deploy.outputs.acrLoginServer }}
+      apiWebAppName: ${{ steps.deploy.outputs.apiWebAppName }}
+      apiWebAppUrl: ${{ steps.deploy.outputs.apiWebAppUrl }}
+      uiWebAppName: ${{ steps.deploy.outputs.uiWebAppName }}
+      uiWebAppUrl: ${{ steps.deploy.outputs.uiWebAppUrl }}
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_INFRA_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Create Resource Group
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            az group create \
+              --name ${{ env.RESOURCE_GROUP }} \
+              --location ${{ env.LOCATION }}
+
+      - name: Deploy Bicep Template
+        id: deploy
+        uses: azure/arm-deploy@v2
+        with:
+          scope: resourcegroup
+          resourceGroupName: ${{ env.RESOURCE_GROUP }}
+          template: ./infra/main.bicep
+          parameters: ./infra/main.bicepparam
+          failOnStdErr: false
+
+      - name: Get ACR Credentials
+        id: acr-creds
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            ACR_NAME="${{ steps.deploy.outputs.acrName }}"
+            echo "Getting credentials for ACR: $ACR_NAME"
+            
+            ACR_USERNAME=$(az acr credential show --name $ACR_NAME --query username -o tsv)
+            ACR_PASSWORD=$(az acr credential show --name $ACR_NAME --query "passwords[0].value" -o tsv)
+            
+            echo "::add-mask::$ACR_PASSWORD"
+            echo "acrUsername=$ACR_USERNAME" >> $GITHUB_OUTPUT
+            echo "acrPassword=$ACR_PASSWORD" >> $GITHUB_OUTPUT
+
+      - name: Summary
+        run: |
+          echo "## 🚀 Infrastructure Deployment Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Resources Created" >> $GITHUB_STEP_SUMMARY
+          echo "- **Resource Group:** ${{ env.RESOURCE_GROUP }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **ACR Name:** ${{ steps.deploy.outputs.acrName }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **ACR Login Server:** ${{ steps.deploy.outputs.acrLoginServer }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API Web App:** ${{ steps.deploy.outputs.apiWebAppName }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **API URL:** ${{ steps.deploy.outputs.apiWebAppUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **UI Web App:** ${{ steps.deploy.outputs.uiWebAppName }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **UI URL:** ${{ steps.deploy.outputs.uiWebAppUrl }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔑 Required GitHub Secrets" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Add these secrets to deploy applications:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "ACR_USERNAME: ${{ steps.acr-creds.outputs.acrUsername }}" >> $GITHUB_STEP_SUMMARY
+          echo "ACR_PASSWORD: <retrieved from ACR>" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### ⚠️ Next Steps" >> $GITHUB_STEP_SUMMARY
+          echo "1. Add ACR secrets to GitHub (see above)" >> $GITHUB_STEP_SUMMARY
+          echo "2. Run configure-oidc.ps1 locally to set up app deployment authentication" >> $GITHUB_STEP_SUMMARY
+          echo "3. Update workflow files with correct resource names" >> $GITHUB_STEP_SUMMARY
+
+  configure-app-settings:
+    runs-on: ubuntu-latest
+    needs: deploy-infrastructure
+    steps:
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_INFRA_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Configure UI App Settings
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            echo "Configuring MoviesApi URL in UI web app..."
+            az webapp config appsettings set \
+              --name ${{ needs.deploy-infrastructure.outputs.uiWebAppName }} \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --settings MoviesApi__BaseUrl="${{ needs.deploy-infrastructure.outputs.apiWebAppUrl }}"
+            
+            echo "✓ App settings configured"
