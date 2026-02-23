@@ -27,7 +27,8 @@ var moviesJson = """
     { "id": 7, "name": "Signal in the Pines", "studio": "Fourth Coffee Films", "director": "Jonah Lake" },
     { "id": 8, "name": "Ironwood Sky", "studio": "Blue Yonder Studios", "director": "Camila Ortiz" },
     { "id": 9, "name": "Paper Constellations", "studio": "Lucerne Pictures", "director": "Darius Cole" },
-    { "id": 10, "name": "Saffron Tide", "studio": "Sunrise Gate Media", "director": "Maya Rao" }
+    { "id": 10, "name": "Saffron Tide", "studio": "Sunrise Gate Media", "director": "Maya Rao" },
+    { "id": 11, "name": "Azure Dreams", "studio": "Cloud Nine Productions", "director": "Alex Chen" }
 ]
 """;
 
