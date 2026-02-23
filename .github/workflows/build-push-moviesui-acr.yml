@@ -11,7 +11,7 @@ on:
       - ".dockerignore"
 
 env:
-  REGISTRY: acrmhceus2-f0adcbg5c5b0gpga.azurecr.io
+  REGISTRY: acrmhceus27tna73b6ragwu.azurecr.io
   IMAGE_NAME: moviesui
 
 jobs:
