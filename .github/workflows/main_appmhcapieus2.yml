@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - appmhcapieus2
+name: Build and deploy MoviesApi to Azure Web App
 
 on:
   push:
@@ -61,6 +61,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'appmhcapieus2'
+          app-name: 'app-mhc-api-eus2-7tna73b6ragwu'
           slot-name: 'Production'
           package: .
