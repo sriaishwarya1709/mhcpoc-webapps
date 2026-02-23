@@ -128,27 +128,23 @@ $uiAppReg = New-AppRegistrationWithFederated `
     -WebAppName $uiApp.name `
     -Subject $apiSubject
 
-# Generate unique secret suffixes (similar to your workflow)
-$apiSuffix = ([guid]::NewGuid().ToString() -replace '-', '').ToUpper().Substring(0, 32)
-$uiSuffix = ([guid]::NewGuid().ToString() -replace '-', '').ToUpper().Substring(0, 32)
-
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "🔑 GITHUB SECRETS - Add these to your repository" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "`nFor MoviesApi ($($apiApp.name)):"
-Write-Host "AZUREAPPSERVICE_CLIENTID_${apiSuffix}: $($apiAppReg.ClientId)"
-Write-Host "AZUREAPPSERVICE_TENANTID_${apiSuffix}: $tenantId"
-Write-Host "AZUREAPPSERVICE_SUBSCRIPTIONID_${apiSuffix}: $subscriptionId"
+Write-Host "AZURE_API_CLIENT_ID: $($apiAppReg.ClientId)"
 
 Write-Host "`nFor MoviesUi ($($uiApp.name)):"
-Write-Host "AZUREAPPSERVICE_CLIENTID_${uiSuffix}: $($uiAppReg.ClientId)"
-Write-Host "AZUREAPPSERVICE_TENANTID_${uiSuffix}: $tenantId"
-Write-Host "AZUREAPPSERVICE_SUBSCRIPTIONID_${uiSuffix}: $subscriptionId"
+Write-Host "AZURE_UI_CLIENT_ID: $($uiAppReg.ClientId)"
+
+Write-Host "`nShared secrets (same for both):"
+Write-Host "AZURE_TENANT_ID: $tenantId"
+Write-Host "AZURE_SUBSCRIPTION_ID: $subscriptionId"
 Write-Host "========================================`n" -ForegroundColor Cyan
 
 Write-Host "⚠️  IMPORTANT:" -ForegroundColor Yellow
 Write-Host "1. Add the secrets above to your GitHub repository"
-Write-Host "2. Update your workflow files to use these new secret names"
+Write-Host "2. Workflows are already configured with these secret names"
 Write-Host "3. Update workflows with correct app names:"
 Write-Host "   - API app name: $($apiApp.name)"
 Write-Host "   - UI app name: $($uiApp.name)"

@@ -70,19 +70,17 @@ Go to your GitHub repository → **Settings** → **Secrets and variables** → 
 - `ACR_PASSWORD`
 
 **From OIDC configuration script:**
-- `AZUREAPPSERVICE_CLIENTID_[SUFFIX]` (for API)
-- `AZUREAPPSERVICE_TENANTID_[SUFFIX]` (for API)
-- `AZUREAPPSERVICE_SUBSCRIPTIONID_[SUFFIX]` (for API)
-- `AZUREAPPSERVICE_CLIENTID_[SUFFIX]` (for UI)
-- `AZUREAPPSERVICE_TENANTID_[SUFFIX]` (for UI)
-- `AZUREAPPSERVICE_SUBSCRIPTIONID_[SUFFIX]` (for UI)
+- `AZURE_API_CLIENT_ID` (for API deployments)
+- `AZURE_UI_CLIENT_ID` (for UI deployments)
+- `AZURE_TENANT_ID` (shared)
+- `AZURE_SUBSCRIPTION_ID` (shared)
 
 ### 5. Update GitHub Workflows
 
 Update your workflow files (`.github/workflows/*.yml`) with:
-- Correct secret names from step 4
 - Correct app names from deployment output
 - Correct ACR name from deployment output
+- Secret names are already configured correctly
 
 ## Manual Deployment (Alternative)
 
