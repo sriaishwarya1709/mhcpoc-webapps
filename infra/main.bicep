@@ -7,17 +7,12 @@ param baseName string = 'mhc'
 @description('Environment name (e.g., dev, prod)')
 param environment string = 'prod'
 
-@description('GitHub repository in the format owner/repo')
-param githubRepository string
-
-@description('GitHub branch name')
-param githubBranch string = 'main'
-
 // Variables
+var uniqueSuffix = uniqueString(resourceGroup().id)
 var resourcePrefix = '${baseName}${environment}'
-var acrName = 'acr${resourcePrefix}${uniqueString(resourceGroup().id)}'
-var apiAppName = 'app${baseName}api${environment}'
-var uiAppName = 'app${baseName}webui${environment}'
+var acrName = 'acr${resourcePrefix}${uniqueSuffix}'
+var apiAppName = 'app-${baseName}-api-${environment}-${uniqueSuffix}'
+var uiAppName = 'app-${baseName}-webui-${environment}-${uniqueSuffix}'
 var apiAppServicePlanName = 'plan-${baseName}-api-${environment}'
 var uiAppServicePlanName = 'plan-${baseName}-ui-${environment}'
 

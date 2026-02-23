@@ -22,15 +22,7 @@ The Bicep template creates the following Azure resources:
 
 ## Quick Start
 
-### 1. Update Parameters
-
-Edit `main.bicepparam` and update the following:
-
-```bicep
-param githubRepository = 'YOUR_GITHUB_USERNAME/YOUR_REPO_NAME'  // e.g., 'microsoft/movies-demo'
-```
-
-### 2. Deploy Infrastructure
+### 1. Deploy Infrastructure
 
 Run the deployment script:
 
@@ -41,10 +33,10 @@ cd infra
 
 This will:
 - Create a resource group
-- Deploy all Azure resources
+- Deploy all Azure resources with unique names
 - Output ACR credentials
 
-### 3. Configure GitHub OIDC Authentication
+### 2. Configure GitHub OIDC Authentication
 
 Run the OIDC configuration script:
 
@@ -61,7 +53,7 @@ This will:
 - Assign necessary permissions
 - Output GitHub secrets
 
-### 4. Add Secrets to GitHub
+### 3. Add Secrets to GitHub
 
 Go to your GitHub repository → **Settings** → **Secrets and variables** → **Actions** and add:
 
@@ -75,7 +67,7 @@ Go to your GitHub repository → **Settings** → **Secrets and variables** → 
 - `AZURE_TENANT_ID` (shared)
 - `AZURE_SUBSCRIPTION_ID` (shared)
 
-### 5. Update GitHub Workflows
+### 4. Update GitHub Workflows
 
 Update your workflow files (`.github/workflows/*.yml`) with:
 - Correct app names from deployment output

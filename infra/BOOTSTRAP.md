@@ -79,15 +79,7 @@ AZURE_TENANT_ID: <tenantId from above>
 AZURE_SUBSCRIPTION_ID: <subscriptionId from above>
 ```
 
-### Step 3: Update Repository in Bicep Parameters
-
-Edit `infra/main.bicepparam`:
-
-```bicep
-param githubRepository = 'YourGitHubOrg/YourRepo'
-```
-
-### Step 4: Push and Deploy
+### Step 3: Push and Deploy
 
 ```powershell
 git add .
@@ -161,7 +153,6 @@ Then just use GitHub Actions for application deployments.
 - Service principal propagation takes time
 
 ### "Template deployment failed"
-- Check that githubRepository parameter is set correctly
 - Verify resource names are globally unique
 
 ## Support
